@@ -1,0 +1,181 @@
+---
+import '../styles/global.css';
+import { projects, now, stack, contact } from '../data/site';
+
+const esc = (s: string) =>
+  s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+// Light syntax coloring for the little code sketches on each card.
+const colorSketch = (src: string) =>
+  src
+    .split('\n')
+    .map((line) => {
+      // Order matters: strings first, so later passes never touch class attributes.
+      let out = esc(line);
+      out = out.replace(/"([^"]*)"/g, '<span class=s>"$1"</span>');
+      out = out.replace(/(#[^<]*)$/, '<span class=c>$1</span>');
+      out = out.replace(/^(\s*)([a-z_]+):(\s)/, '$1<span class=kw>$2</span>:$3');
+      return out;
+    })
+    .join('\n');
+
+const statusLabel: Record<string, string> = {
+  wip: 'wip', prod: 'prod', research: 'research', prototype: 'prototype', done: 'done',
+};
+const tagClass: Record<string, string> = { wip: 't-wip', 'r&d': 't-rd', ship: 't-ship' };
+
+const stackEntries = Object.entries(stack);
+const stackHtml =
+  '<span class="p">{</span>\n' +
+  stackEntries
+    .map(
+      ([k, v]) =>
+        `  <span class="k">"${esc(k)}"</span>: [` +
+        v.map((s) => `<span class="s">"${esc(s)}"</span>`).join(', ') +
+        ']'
+    )
+    .join(',\n') +
+  '\n<span class="p">}</span>';
+const title = 'kemwa.dev — Keith Warner';
+const description =
+  'Technical portfolio of Keith Warner: POS integrations, data pipelines, internal tools and agent systems.';
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <meta name="theme-color" content="#0B0D10" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="canonical" href="https://kemwa.dev/" />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content="https://kemwa.dev/" />
+  <meta property="og:type" content="website" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <header class="top">
+    <nav class="wrap" aria-label="Primary">
+      <a class="home" href="#top">~/kemwa<span class="accent">.dev</span></a>
+      <a class="active" href="#readme">README.md</a>
+      <a href="#projects">projects/</a>
+      <a href="#now">now.log</a>
+      <a href="#stack">stack.json</a>
+      <a href="#contact">contact.sh</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section id="readme" class="wrap row" style="padding-top:72px">
+      <div class="pane grow">
+        <div class="pane-head"><span class="dots" aria-hidden="true"><span></span><span></span><span></span></span>keith@kemwa: ~</div>
+        <div class="term">
+          <p class="prompt"><span class="accent">$</span> cat README.md</p>
+          <h1><span class="p">#</span> keith warner</h1>
+          <p class="lede">I build integrations, data pipelines, internal tools and agent systems, mostly for the restaurants and bars that run on messy POS data.</p>
+          <p class="prompt" style="margin-top:28px"><span class="accent">$</span> ls projects/</p>
+          <p class="ls">{projects.map((p) => <a href={`#${p.name}`}>{p.name}/</a>)}</p>
+          <p class="prompt" style="margin-top:28px"><span class="accent">$</span> <span class="cursor" aria-hidden="true"></span></p>
+        </div>
+      </div>
+
+      <div class="pane side">
+        <div class="pane-head">whoami.json</div>
+<pre class="json"><span class="p">{'{'}</span>
+  <span class="k">"handle"</span>: <span class="s">"kemwa"</span>,
+  <span class="k">"based_in"</span>: <span class="s">"West Sacramento, CA"</span>,
+  <span class="k">"builds"</span>: [
+    <span class="s">"POS integrations"</span>,
+    <span class="s">"data pipelines"</span>,
+    <span class="s">"agent systems"</span>,
+    <span class="s">"field hardware"</span>
+  ],
+  <span class="k">"teaches"</span>: <span class="s">"blockchain @ Baruch"</span>,
+  <span class="k">"open_to_work"</span>: <span class="n">true</span>,
+  <span class="k">"exec_profile"</span>: <a class="s" href={contact.execProfile}>"keithwarner.com"</a>
+<span class="p">{'}'}</span></pre>
+      </div>
+    </section>
+
+    <section id="projects" class="wrap">
+      <h2><span class="accent">~/</span>projects</h2>
+      <p class="sub">// what I've shipped and what's on the bench</p>
+      <div class="grid">
+        {projects.map((p) => (
+          <article class="pane card" id={p.name}>
+            <div class="card-head">
+              <h3>{p.name}</h3>
+              <span class={`status st-${p.status}`}>● {statusLabel[p.status]}</span>
+            </div>
+            <p>{p.summary}</p>
+            <pre class="sketch" set:html={colorSketch(p.sketch)} />
+            <div class="tags">
+              {p.stack.map((s, i) => (
+                <span>{i === 0 && <span aria-hidden="true" style={`color:${p.dot}`}>● </span>}{s}</span>
+              ))}
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="wrap row">
+      <div id="now" class="pane grow">
+        <div class="pane-head">now.log <span class="c">— tail -f</span></div>
+        <ol class="log">
+          {now.map((n) => (
+            <li><span class={`tag ${tagClass[n.tag]}`}>[{n.tag}]</span> {n.text}</li>
+          ))}
+        </ol>
+      </div>
+
+      <div id="stack" class="pane side">
+        <div class="pane-head">stack.json</div>
+        <pre class="json" style="font-size:13.5px" set:html={stackHtml} />
+      </div>
+    </section>
+
+    <section id="contact" class="wrap" style="padding-bottom:88px">
+      <div class="pane">
+        <div class="pane-head">contact.sh</div>
+        <div class="sh">
+          <p><span class="accent">$</span> <span class="p">mail</span> <a href={`mailto:${contact.email}`}>{contact.email}</a></p>
+          <p><span class="accent">$</span> <span class="p">open</span> <a href={contact.github}>github.com/kemwa</a></p>
+          {contact.linkedin && <p><span class="accent">$</span> <span class="p">open</span> <a href={contact.linkedin}>linkedin</a></p>}
+          {contact.resume && <p><span class="accent">$</span> <span class="p">curl -O</span> <a href={contact.resume}>resume.pdf</a></p>}
+          <p class="note"># career history and leadership roles → <a href={contact.execProfile}>keithwarner.com</a></p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <span>© {new Date().getFullYear()} keith warner</span>
+      <span>astro · github · cloudflare · <a href="https://github.com/kemwa/kemwa.dev">source</a></span>
+    </div>
+  </footer>
+
+  <script>
+    // Highlight the nav tab for the section in view.
+    const links = [...document.querySelectorAll('.top a:not(.home)')];
+    const map = new Map(links.map((a) => [a.getAttribute('href')?.slice(1), a]));
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (!e.isIntersecting) continue;
+          links.forEach((a) => a.classList.remove('active'));
+          map.get(e.target.id)?.classList.add('active');
+        }
+      },
+      { rootMargin: '-40% 0px -55% 0px' }
+    );
+    map.forEach((_, id) => { const el = id && document.getElementById(id); if (el) io.observe(el); });
+  </script>
+</body>
+</html>

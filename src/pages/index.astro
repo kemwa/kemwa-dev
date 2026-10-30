@@ -124,8 +124,10 @@ const description =
       </div>
     </section>
 
-    <section class="wrap row">
-      <div id="now" class="pane grow">
+    <section id="now" class="wrap">
+      <h2><span class="accent">~/</span>in progress</h2>
+      <p class="sub">// what I'm working on right now</p>
+      <div class="pane">
         <div class="pane-head">now.log <span class="c">— tail -f</span></div>
         <ol class="log">
           {now.map((n) => (
@@ -133,10 +135,14 @@ const description =
           ))}
         </ol>
       </div>
+    </section>
 
-      <div id="stack" class="pane side">
+    <section id="stack" class="wrap">
+      <h2><span class="accent">~/</span>tech stack</h2>
+      <p class="sub">// what I build with</p>
+      <div class="pane">
         <div class="pane-head">stack.json</div>
-        <pre class="json" style="font-size:13.5px" set:html={stackHtml} />
+        <pre class="json" set:html={stackHtml} />
       </div>
     </section>
 

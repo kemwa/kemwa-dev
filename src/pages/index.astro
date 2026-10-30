@@ -147,6 +147,8 @@ const description =
     </section>
 
     <section id="contact" class="wrap" style="padding-bottom:88px">
+      <h2><span class="accent">~/</span>contact</h2>
+      <p class="sub">// how to reach me</p>
       <div class="pane">
         <div class="pane-head">contact.sh</div>
         <div class="sh">
@@ -168,20 +170,30 @@ const description =
   </footer>
 
   <script>
-    // Highlight the nav tab for the section in view.
+    // Highlight the nav tab for the section whose heading has reached the top.
+    // A thin intersection band skipped the short "in progress" section.
     const links = [...document.querySelectorAll('.top a:not(.home)')];
-    const map = new Map(links.map((a) => [a.getAttribute('href')?.slice(1), a]));
-    const io = new IntersectionObserver(
-      (entries) => {
-        for (const e of entries) {
-          if (!e.isIntersecting) continue;
-          links.forEach((a) => a.classList.remove('active'));
-          map.get(e.target.id)?.classList.add('active');
-        }
-      },
-      { rootMargin: '-40% 0px -55% 0px' }
-    );
-    map.forEach((_, id) => { const el = id && document.getElementById(id); if (el) io.observe(el); });
+    const sections = links
+      .map((a) => document.getElementById(a.getAttribute('href')?.slice(1) ?? ''))
+      .filter((el) => el instanceof HTMLElement);
+
+    const activate = () => {
+      const navH = document.querySelector('.top')?.getBoundingClientRect().height ?? 0;
+      const marker = navH + Math.min(window.innerHeight * 0.28, 240);
+      let current = sections[0];
+      for (const section of sections) {
+        if (section.getBoundingClientRect().top <= marker) current = section;
+      }
+      // The last section can't scroll up to the marker, so reaching the bottom selects it.
+      const atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4;
+      if (atBottom) current = sections[sections.length - 1];
+      const id = current?.id;
+      for (const a of links) a.classList.toggle('active', a.getAttribute('href') === `#${id}`);
+    };
+
+    activate();
+    document.addEventListener('scroll', activate, { passive: true });
+    window.addEventListener('resize', activate);
   </script>
 </body>
 </html>

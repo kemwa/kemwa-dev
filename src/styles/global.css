@@ -69,7 +69,7 @@ pre { margin: 0; font-family: inherit; white-space: pre-wrap; overflow-x: auto; 
 .kw { color: var(--kw); } .c { color: var(--faint); }
 
 /* projects */
-h2 { margin: 0 0 8px; font-size: 22px; font-weight: 700; color: var(--bright); }
+h2 { margin: 1.7em 0 8px; font-size: 22px; font-weight: 700; color: var(--bright); }
 .sub { margin: 0 0 32px; color: var(--muted); font-size: 14px; }
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); gap: 16px; }
 .card { padding: 22px; display: flex; flex-direction: column; gap: 12px; }

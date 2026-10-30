@@ -17,7 +17,7 @@ export interface Project {
 export const contact = {
   email: 'keith@keithwarner.com',
   github: 'https://github.com/kemwa',
-  linkedin: '', // add your LinkedIn URL to show it
+  linkedin: 'https://www.linkedin.com/in/keithmwarner/',
   resume: '', // e.g. '/resume.pdf' after adding the file to /public
   execProfile: 'https://keithwarner.com',
 };

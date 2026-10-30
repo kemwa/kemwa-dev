@@ -40,7 +40,7 @@ section[id], main[id] { scroll-margin-top: 64px; }
 .top nav { display: flex; flex-wrap: wrap; align-items: stretch; gap: 0 4px; }
 .top a { display: inline-flex; align-items: center; min-height: 52px; padding: 0 14px; text-decoration: none; color: var(--muted); font-size: 14px; border-bottom: 2px solid transparent; }
 .top a:hover { color: var(--text); }
-.top a.home { color: var(--text); font-weight: 700; padding-left: 0; padding-right: 16px; font-size: 15px; }
+.top a.home { color: var(--accent); font-weight: 700; padding-left: 0; padding-right: 16px; font-size: 15px; }
 .top a.active { color: var(--text); border-bottom-color: var(--accent); }
 .accent { color: var(--accent); }
 
